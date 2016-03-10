@@ -1,1 +1,121 @@
-Hello World
+<html>
+<head>
+    <title>HTML dynamic table using JavaScript</title>
+    <script src="https://da189i1jfloii.cloudfront.net/js/kinvey-html5-1.6.8.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</head>
+<body onload="load()">
+
+<div id="mydata">
+<b>Current data in the system ...</b>
+<table id="myTableData"  border="1" cellpadding="2">
+    <tr>
+        <td>&nbsp;</td>
+        <td><b>Name</b></td>
+        <td><b>Email</b></td>
+        <td><b>Date</b></td>
+    </tr>
+</table>
+&nbsp;<br/>
+</div>
+
+</body>
+
+<script>
+
+         
+             var promise = Kinvey.init({
+        appKey    : 'kid_b13tntvgyZ',
+        appSecret : '6e7f45c88031402fac2143b6f2dbe6ac'
+    });
+
+    promise.then(function(activeUser) {
+
+    console.log ('Success initializing');
+var promise = Kinvey.User.login('username', 'password');
+promise.then(function(user) {
+
+}, function(error) {
+
+});
+        var promise = Kinvey.ping();
+        promise.then(function(response) {
+        console.log('Kinvey Ping Success. Kinvey Service is alive, version: ' + response.version + ', response: ' + response.kinvey);
+
+      var promise = Kinvey.DataStore.find('Lovers', null);
+      promise.then(function(entities) {
+      var arrayLength = entities.length;
+console.log ('Hello1');
+      for (var i = 0; i < arrayLength; i++) {
+        var object = entities[i];
+        var name = object.name;
+        var email = object.email;
+        var date = object.date;
+
+    var table = document.getElementById("myTableData");
+
+    var rowCount = table.rows.length;
+    var row = table.insertRow(rowCount);
+
+    row.insertCell(0).innerHTML= '<input type="button" value = "Delete" onClick="Javacsript:deleteRow(this)">';
+    row.insertCell(1).innerHTML= name;
+    row.insertCell(2).innerHTML= email;
+    row.insertCell(3).innerHTML= date;
+      }
+        }, function(error) {
+console.log(error.description);
+        });
+
+
+
+
+        }, function(error) {
+            console.log('Kinvey Ping Failed. Response: ' + error.description);
+        });
+
+    }, function(error) {
+        console.log ('error initializing');
+    });
+
+
+
+function deleteRow(obj) {
+     
+    var index = obj.parentNode.parentNode.rowIndex;
+    var table = document.getElementById("myTableData");
+    table.deleteRow(index);
+   
+}
+
+function addTable() {
+     
+    var myTableDiv = document.getElementById("myDynamicTable");
+     
+    var table = document.createElement('TABLE');
+    table.border='1';
+   
+    var tableBody = document.createElement('TBODY');
+    table.appendChild(tableBody);
+     
+    for (var i=0; i<3; i++){
+       var tr = document.createElement('TR');
+       tableBody.appendChild(tr);
+      
+       for (var j=0; j<4; j++){
+           var td = document.createElement('TD');
+           td.width='75';
+           td.appendChild(document.createTextNode("Cell " + i + "," + j));
+           tr.appendChild(td);
+       }
+    }
+    myTableDiv.appendChild(table);
+   
+}
+
+function load() {
+   
+    console.log("Page load finished");
+
+}
+</script>
+</html>
